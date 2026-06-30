@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attendance Calculator</title>
+<style>
+body{
+    margin:0;
+    font-family: "Segoe UI", sans-serif;
+    background:#0b0f1a;
+    color:#fff;
+}
+
+/* Header */
+.header{
+    display:flex;
+    justify-content:space-between;
+    padding:20px;
+}
+
+/* User Info */
+.user-info{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+.avatar{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#00f0ff,#7f00ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:bold;
+}
+.user-details small{
+    color:#aaa;
+}
+
+/* Attendance Calculator */
+.calculator{
+    background:#12172a;
+    padding:15px 25px;
+    border-radius:15px;
+    box-shadow:0 0 15px #00f0ff;
+}
+.calculator h3{
+    margin:0;
+    color:#00f0ff;
+}
+
+/* Summary Cards */
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    padding:20px;
+}
+.card{
+    padding:25px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#1f005c,#5b0060,#870160,#ac255e);
+    box-shadow:0 0 20px rgba(255,0,255,0.4);
+    text-align:center;
+}
+.card h2{ margin:10px 0; }
+
+/* Tables */
+table{
+    width:95%;
+    margin:20px auto;
+    border-collapse:collapse;
+    background:#12172a;
+    border-radius:12px;
+    overflow:hidden;
+}
+th,td{
+    padding:12px;
+    border-bottom:1px solid #222;
+    text-align:center;
+}
+th{
+    background:#1e2542;
+}
+.week-btn{
+    background:#00f0ff;
+    color:#000;
+    border:none;
+    padding:5px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+.green{ color:#00ff7f; font-weight:bold; }
+.red{ color:#ff4d4d; font-weight:bold; }
+
+.hidden{ display:none; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="user-info">
+        <div class="avatar">K</div>
+        <div class="user-details">
+            <b>Karthik</b><br>
+            <small>Roll: AUCS4-021</small><br>
+            <small>Phone: 9XXXXXXXXX</small>
+        </div>
+    </div>
+
+    <div class="calculator">
+        <h3>Attendance</h3>
+        <p>Attended: <span id="attended">0</span></p>
+        <p>Total: <span id="total">0</span></p>
+        <h2 id="percent">0%</h2>
+    </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="cards">
+    <div class="card">
+        <h2 id="totalClasses">0</h2>
+        <p>Total Classes</p>
+    </div>
+    <div class="card">
+        <h2>5</h2>
+        <p>Subjects</p>
+    </div>
+    <div class="card">
+        <h2>3</h2>
+        <p>Labs</p>
+    </div>
+</div>
+
+<!-- SUBJECT TABLE -->
+<table>
+<tr>
+    <th>Week</th>
+    <th>DBMS</th>
+    <th>DAA</th>
+    <th>MP</th>
+    <th>FLAT</th>
+    <th>ME</th>
+</tr>
+
+<tr>
+<td>
+    Week 1 <br>
+    <button class="week-btn" onclick="toggleWeek('w1')">▼</button>
+</td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+</tr>
+
+<tr id="w1" class="hidden">
+<td>Date</td>
+<td>Tue (20-01-26)</td>
+<td>Wed (21-01-26)</td>
+<td>Fri (23-01-26)</td>
+<td>Thu (22-01-26)</td>
+<td>Mon (19-01-26)</td>
+</tr>
+</table>
+
+<!-- LAB TABLE -->
+<table>
+<tr>
+    <th>Week</th>
+    <th>DBMS Lab</th>
+    <th>ALC Lab</th>
+    <th>WT Lab</th>
+</tr>
+
+<tr>
+<td>Week 1</td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+<td><input type="checkbox" onchange="calc()"></td>
+</tr>
+</table>
+
+<script>
+function toggleWeek(id){
+    document.getElementById(id).classList.toggle("hidden");
+}
+
+function calc(){
+    let boxes=document.querySelectorAll("input[type='checkbox']");
+    let attended=0;
+    boxes.forEach(b=>{ if(b.checked) attended++; });
+
+    let total=boxes.length;
+    let percent = total ? ((attended/total)*100).toFixed(1) : 0;
+
+    document.getElementById("attended").innerText=attended;
+    document.getElementById("total").innerText=total;
+    document.getElementById("percent").innerText=percent+"%";
+    document.getElementById("totalClasses").innerText=total;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Attendance Calculator</title>
+
+<style>
+body{
+    margin:0;
+    font-family:"Segoe UI",sans-serif;
+    background:#0b0f1a;
+    color:#fff;
+}
+.header{
+    display:flex;
+    justify-content:space-between;
+    padding:20px;
+}
+.user-info{
+    display:flex;
+    gap:15px;
+}
+.avatar{
+    width:50px;height:50px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#00f0ff,#7f00ff);
+    display:flex;align-items:center;justify-content:center;
+    font-size:22px;font-weight:bold;
+}
+.calculator{
+    background:#12172a;
+    padding:15px 25px;
+    border-radius:15px;
+    box-shadow:0 0 15px #00f0ff;
+}
+.cards{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    padding:20px;
+}
+.card{
+    padding:25px;
+    border-radius:18px;
+    background:linear-gradient(135deg,#1f005c,#5b0060,#870160,#ac255e);
+    text-align:center;
+}
+table{
+    width:95%;
+    margin:20px auto;
+    border-collapse:collapse;
+    background:#12172a;
+    border-radius:12px;
+}
+th,td{
+    padding:12px;
+    border-bottom:1px solid #222;
+    text-align:center;
+}
+th{background:#1e2542;}
+.week-btn{
+    background:#00f0ff;
+    border:none;
+    padding:4px 8px;
+    border-radius:6px;
+    cursor:pointer;
+}
+.hidden{display:none;}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="user-info">
+        <div class="avatar">K</div>
+        <div>
+            <b>Karthik</b><br>
+            <small>Roll: AUCS4-021</small>
+        </div>
+    </div>
+
+    <div class="calculator">
+        <h3>Attendance</h3>
+        Attended: <span id="attended">0</span><br>
+        Total: <span id="total">0</span>
+        <h2 id="percent">0%</h2>
+    </div>
+</div>
+
+<!-- SUMMARY -->
+<div class="cards">
+    <div class="card">
+        <h2 id="totalClasses">0</h2>
+        <p>Total Classes</p>
+    </div>
+    <div class="card"><h2>5</h2><p>Subjects</p></div>
+    <div class="card"><h2>3</h2><p>Labs</p></div>
+</div>
+
+<!-- SUBJECT TABLE -->
+<table id="subjectTable">
+<tr>
+    <th>Week</th>
+    <th>DBMS</th>
+    <th>DAA</th>
+    <th>MP</th>
+    <th>FLAT</th>
+    <th>ME</th>
+</tr>
+</table>
+
+<script>
+const startDate = new Date("2026-01-19"); // Monday
+const weeks = 13;
+const subjects = ["DBMS","DAA","MP","FLAT","ME"];
+
+/*
+  TIMETABLE FORMAT (you will send later)
+  true  = subject present → checkbox
+  false = subject absent  → blank
+*/
+const timetable = {
+  1: [true,true,true,true,true], // Week 1 example
+  // Week 2..13 can be added later
+};
+
+const table = document.getElementById("subjectTable");
+
+for(let w=1; w<=weeks; w++){
+    let row = document.createElement("tr");
+    let cell = document.createElement("td");
+    cell.innerHTML = `Week ${w}<br>
+        <button class="week-btn" onclick="toggleWeek('w${w}')">▼</button>`;
+    row.appendChild(cell);
+
+    subjects.forEach((s,i)=>{
+        let td=document.createElement("td");
+        if(timetable[w]?.[i]){
+            td.innerHTML=`<input type="checkbox" onchange="calc()">`;
+        }else{
+            td.innerHTML="—";
+        }
+        row.appendChild(td);
+    });
+    table.appendChild(row);
+
+    // DATE ROW
+    let dRow=document.createElement("tr");
+    dRow.id="w"+w;
+    dRow.className="hidden";
+    let dCell=document.createElement("td");
+    dCell.innerText="Dates";
+    dRow.appendChild(dCell);
+
+    for(let d=0; d<5; d++){
+        let date=new Date(startDate);
+        date.setDate(startDate.getDate()+((w-1)*7)+d);
+        let td=document.createElement("td");
+        td.innerText=date.toDateString().slice(0,10);
+        dRow.appendChild(td);
+    }
+    table.appendChild(dRow);
+}
+
+function toggleWeek(id){
+    document.getElementById(id).classList.toggle("hidden");
+}
+
+function calc(){
+    let boxes=document.querySelectorAll("input[type='checkbox']");
+    let attended=0;
+    boxes.forEach(b=>b.checked && attended++);
+    let total=boxes.length;
+    let percent=total?((attended/total)*100).toFixed(1):0;
+    attended.innerText=attended;
+    total.innerText=total;
+    percent.innerText=percent+"%";
+    totalClasses.innerText=total;
+}
+</script>
+
+</body>
+</html>
