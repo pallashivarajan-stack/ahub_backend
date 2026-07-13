@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import { useJoinUsConfig, useUpdateJoinUsConfig, useJoinUsSubmissions, useDeleteJoinUsSubmission } from "@/hooks/useCMS";
 import { Plus, Trash2, GripVertical, Save, Download, Search, Eye, X, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
@@ -63,12 +63,16 @@ export function JoinUsTab() {
   const [fields, setFields] = useState<any[]>([]);
   const [dirty, setDirty] = useState(false);
 
-  useEffect(() => {
+  const prevRouteFormTypeRef = useRef(routeFormType);
+  if (routeFormType !== prevRouteFormTypeRef.current) {
+    prevRouteFormTypeRef.current = routeFormType;
     setActiveFormType(routeFormType);
     setDirty(false);
-  }, [routeFormType]);
+  }
 
-  useEffect(() => {
+  const prevConfigRef = useRef(config);
+  if (config !== prevConfigRef.current) {
+    prevConfigRef.current = config;
     if (config) {
       setTitle(config.title || "");
       setSubtitle(config.subtitle || "");
@@ -77,7 +81,7 @@ export function JoinUsTab() {
       setFields(config.fields || []);
       setDirty(false);
     }
-  }, [config]);
+  }
 
   const markDirty = useCallback(() => setDirty(true), []);
 
@@ -329,11 +333,15 @@ function SortableFieldRow({ field, index, onUpdate, onDelete }: {
 
   const hasOptions = ["select", "radio", "checkbox"].includes(field.type);
 
-  useEffect(() => {
+  const prevExpandedRef = useRef(expanded);
+  const prevFieldOptionsRef = useRef(field.options);
+  if (expanded !== prevExpandedRef.current || field.options !== prevFieldOptionsRef.current) {
+    prevExpandedRef.current = expanded;
+    prevFieldOptionsRef.current = field.options;
     if (!expanded) {
       setOptionsText((field.options || []).join("\n"));
     }
-  }, [expanded, field.options]);
+  }
 
   return (
     <div ref={setNodeRef} style={style} className="rounded-lg border border-slate-200 bg-white">

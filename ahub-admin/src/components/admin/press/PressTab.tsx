@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, Newspaper, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,13 +50,12 @@ export function PressTab() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPageOpen, setIsPageOpen] = useState(true);
   const [editingItem, setEditingItem] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (pressItems) {
-      setLocalItems(pressItems);
-    }
-  }, [pressItems]);
+  const [localItems, setLocalItems] = useState<any[]>(pressItems || []);
+  const prevPressItemsRef = useRef(pressItems);
+  if (pressItems && pressItems !== prevPressItemsRef.current) {
+    prevPressItemsRef.current = pressItems;
+    setLocalItems(pressItems);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

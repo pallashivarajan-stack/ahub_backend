@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,13 +43,12 @@ export function MentorTab() {
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMentor, setEditingMentor] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (mentors) {
-      setLocalItems(mentors);
-    }
-  }, [mentors]);
+  const [localItems, setLocalItems] = useState<any[]>(mentors || []);
+  const prevMentorsRef = useRef(mentors);
+  if (mentors && mentors !== prevMentorsRef.current) {
+    prevMentorsRef.current = mentors;
+    setLocalItems(mentors);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

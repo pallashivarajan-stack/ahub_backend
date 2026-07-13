@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, Loader2, Trash2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,10 +30,6 @@ export function ImpactTab() {
       m.label?.toLowerCase().includes(search.toLowerCase()) ||
       m.value?.toLowerCase().includes(search.toLowerCase())
   );
-
-  useEffect(() => {
-    if (!isDialogOpen) setEditingMetric(null);
-  }, [isDialogOpen]);
 
   const openCreateDialog = () => {
     setEditingMetric(null);
@@ -154,7 +150,7 @@ export function ImpactTab() {
         </CardContent>
       </Card>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+      <Dialog open={isDialogOpen} onOpenChange={(open) => { setIsDialogOpen(open); if (!open) setEditingMetric(null); }}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>{editingMetric ? "Edit Impact Metric" : "Add Impact Metric"}</DialogTitle>

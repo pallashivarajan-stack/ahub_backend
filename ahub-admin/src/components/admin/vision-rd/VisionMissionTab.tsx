@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Loader2, Image as ImageIcon, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -66,19 +66,21 @@ function VisionMissionCard({
   uploadImage: any;
   isPending: boolean;
 }) {
-  const [heading, setHeading] = useState("");
-  const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [heading, setHeading] = useState(item?.heading || "");
+  const [description, setDescription] = useState(item?.description || "");
+  const [imageUrl, setImageUrl] = useState(item?.image_url || "");
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  const prevItemRef = useRef(item);
+  if (item !== prevItemRef.current) {
+    prevItemRef.current = item;
     if (item) {
       setHeading(item.heading || "");
       setDescription(item.description || "");
       setImageUrl(item.image_url || "");
     }
-  }, [item]);
+  }
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

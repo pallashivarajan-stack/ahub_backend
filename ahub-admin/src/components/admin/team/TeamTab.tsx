@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, Users, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,13 +50,12 @@ export function TeamTab() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isPageOpen, setIsPageOpen] = useState(true);
   const [editingMember, setEditingMember] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (teamMembers) {
-      setLocalItems(teamMembers);
-    }
-  }, [teamMembers]);
+  const [localItems, setLocalItems] = useState<any[]>(teamMembers || []);
+  const prevTeamMembersRef = useRef(teamMembers);
+  if (teamMembers && teamMembers !== prevTeamMembersRef.current) {
+    prevTeamMembersRef.current = teamMembers;
+    setLocalItems(teamMembers);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,14 +43,12 @@ export function BoardTab() {
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMember, setEditingMember] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  // Keep local items synchronized with backend query result
-  useEffect(() => {
-    if (boardMembers) {
-      setLocalItems(boardMembers);
-    }
-  }, [boardMembers]);
+  const [localItems, setLocalItems] = useState<any[]>(boardMembers || []);
+  const prevBoardMembersRef = useRef(boardMembers);
+  if (boardMembers && boardMembers !== prevBoardMembersRef.current) {
+    prevBoardMembersRef.current = boardMembers;
+    setLocalItems(boardMembers);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

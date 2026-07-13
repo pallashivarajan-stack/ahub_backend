@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, Handshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,13 +43,12 @@ export function PartnerTab() {
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPartner, setEditingPartner] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (partners) {
-      setLocalItems(partners);
-    }
-  }, [partners]);
+  const [localItems, setLocalItems] = useState<any[]>(partners || []);
+  const prevPartnersRef = useRef(partners);
+  if (partners && partners !== prevPartnersRef.current) {
+    prevPartnersRef.current = partners;
+    setLocalItems(partners);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

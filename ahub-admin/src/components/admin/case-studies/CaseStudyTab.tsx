@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, BookOpen } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,13 +43,12 @@ export function CaseStudyTab() {
   const [search, setSearch] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingStudy, setEditingStudy] = useState<any | null>(null);
-  const [localItems, setLocalItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (caseStudies) {
-      setLocalItems(caseStudies);
-    }
-  }, [caseStudies]);
+  const [localItems, setLocalItems] = useState<any[]>(caseStudies || []);
+  const prevCaseStudiesRef = useRef(caseStudies);
+  if (caseStudies && caseStudies !== prevCaseStudiesRef.current) {
+    prevCaseStudiesRef.current = caseStudies;
+    setLocalItems(caseStudies);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),

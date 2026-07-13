@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import { Plus, Loader2, Image as ImageIcon, Milestone, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,27 +50,31 @@ export function RoadmapMilestoneTab() {
   const deleteMilestone = useDeleteMilestone();
   const reorderMilestones = useReorderMilestones();
 
-  const [localMilestones, setLocalMilestones] = useState<any[]>([]);
+  const [localMilestones, setLocalMilestones] = useState<any[]>(milestones || []);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingMs, setEditingMs] = useState<any | null>(null);
   const [search, setSearch] = useState("");
 
-  useEffect(() => {
-    if (milestones) setLocalMilestones(milestones);
-  }, [milestones]);
+  const prevMilestonesRef = useRef(milestones);
+  if (milestones && milestones !== prevMilestonesRef.current) {
+    prevMilestonesRef.current = milestones;
+    setLocalMilestones(milestones);
+  }
 
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
   );
 
-  const [roadmapUrl, setRoadmapUrl] = useState("");
+  const [roadmapUrl, setRoadmapUrl] = useState(roadmapItem?.image_url || "");
   const [isUploadingR, setIsUploadingR] = useState(false);
   const roadmapFileRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  const prevRoadmapItemRef = useRef(roadmapItem);
+  if (roadmapItem !== prevRoadmapItemRef.current) {
+    prevRoadmapItemRef.current = roadmapItem;
     if (roadmapItem?.image_url) setRoadmapUrl(roadmapItem.image_url);
-  }, [roadmapItem]);
+  }
 
   const handleRoadmapUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -366,19 +370,21 @@ function MilestoneForm({
   isSubmitting: boolean;
   uploadImage: any;
 }) {
-  const [yearLabel, setYearLabel] = useState("");
-  const [tagline, setTagline] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [yearLabel, setYearLabel] = useState(initialData?.year_label || "");
+  const [tagline, setTagline] = useState(initialData?.tagline || "");
+  const [imageUrl, setImageUrl] = useState(initialData?.image_url || "");
   const [isUploading, setIsUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
+  const prevInitialDataRef = useRef(initialData);
+  if (initialData !== prevInitialDataRef.current) {
+    prevInitialDataRef.current = initialData;
     if (initialData) {
       setYearLabel(initialData.year_label || "");
       setTagline(initialData.tagline || "");
       setImageUrl(initialData.image_url || "");
     }
-  }, [initialData]);
+  }
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
